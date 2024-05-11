@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/screens/components/NavigationItem.dart';
+import 'package:raqip_app/screens/parent/children.dart';
+import 'package:raqip_app/screens/parent/profile.dart';
 
 class DashboardParent extends StatefulWidget {
   const DashboardParent({super.key});
@@ -21,28 +23,38 @@ class _DashboardParentState extends State<DashboardParent> {
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(24))),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 NavigationItem(
                   label: "Home",
                   icon: Icons.home,
                   isActive: true,
+                  action: () {},
                 ),
                 NavigationItem(
                   label: "Search",
                   icon: Icons.search,
                   isActive: false,
+                  action: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Children()));
+                  },
                 ),
                 NavigationItem(
                   label: "Contact",
                   icon: Icons.comment,
                   isActive: false,
+                  action: () {},
                 ),
                 NavigationItem(
                   label: "Profile",
                   icon: Icons.verified_user,
                   isActive: false,
+                  action: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => const Profile()));
+                  },
                 ),
               ],
             ),

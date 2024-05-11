@@ -1,0 +1,357 @@
+import 'dart:convert';
+import 'dart:core';
+import 'package:social_media_app/models/api_response.dart';
+import 'package:social_media_app/constant.dart';
+import 'package:social_media_app/services/user_service.dart';
+import 'package:http/http.dart' as http;
+import 'package:social_media_app/models/post.dart';
+
+Future<ApiResponse> getPosts() async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse(baseURL + '/posts'),
+      headers: {'Accept': 'application/json', 'authorization': 'Bearer $token'},
+    );
+    switch (response.statusCode) {
+      case 200:
+        List<dynamic> list = jsonDecode(response.body);
+        apiResponse.data = list.map((e) => Post.fromJson(e)).toList();
+        apiResponse.data as List<dynamic>;
+        break;
+      case 401:
+        apiResponse.error = "Unauthenticated";
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> createPost(String body, String? image) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final token = await getToken();
+    final response = await http.post(Uri.parse(baseURL + '/posts'),
+        headers: {
+          'Accept': 'application/json',
+          'authorization': 'Bearer $token'
+        },
+        body: image != null ? {'body': body, 'image': image} : {'body': body});
+    print('---------------- you have an error : ${response.statusCode}');
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['post'];
+        break;
+      case 401:
+        apiResponse.error = "Unauthenticated";
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    print('---------------- you have an error : $e');
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> updatePost(String? body, int id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final token = await getToken();
+    final response = await http.patch(Uri.parse(baseURL + '/posts/$id'),
+        headers: {
+          'Accept': 'application/json',
+          'authorization': 'Bearer $token'
+        },
+        body: {
+          'body': body
+        });
+    switch (response.statusCode) {
+      case 201:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 401:
+        apiResponse.error = "Unauthenticated";
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> likeOrUnlikePost(int postId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final token = await getToken();
+    final response = await http.get(
+      Uri.parse(baseURL + '/posts/$postId/like'),
+      headers: {'Accept': 'application/json', 'authorization': 'Bearer $token'},
+    );
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 401:
+        apiResponse.error = "Unauthenticated";
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> deletePost(int id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final token = await getToken();
+    final response = await http.delete(
+      Uri.parse(baseURL + '/posts/$id'),
+      headers: {'Accept': 'application/json', 'authorization': 'Bearer $token'},
+    );
+
+    switch (response.statusCode) {
+      case 201:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 401:
+        apiResponse.error = "Unauthenticated";
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['message'];
+        break;
+      default:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:social_media_app/models/user.dart';
+
+class Post {
+  int? id;
+  String? body;
+  String? image;
+  int? likesCount;
+  int? commentsCount;
+  User? user;
+  bool? selefLiked;
+  Post(
+      {this.id,
+      this.body,
+      this.image,
+      this.likesCount,
+      this.commentsCount,
+      this.user,
+      this.selefLiked});
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      id: json['post']['id'],
+      body: json['post']['body'],
+      image: json['post']['image'],
+      likesCount: json['post']['likes_count'],
+      commentsCount: json['post']['comments_count'],
+      selefLiked: json['selefLiked'],
+      user: User(
+        id: json['post']['user']['id'],
+        name: json['post']['user']['name'],
+        image: json['post']['user']['image'],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:social_media_app/constant.dart';
+import 'package:social_media_app/models/api_response.dart';
+import 'package:social_media_app/screens/home.dart';
+import 'package:social_media_app/screens/register.dart';
+import 'package:social_media_app/services/user_service.dart';
+import 'package:social_media_app/models/user.dart';
+
+class Login extends StatefulWidget {
+  @override
+  State<Login> createState() {
+    // TODO: implement createState
+    return _LoginState();
+  }
+}
+
+class _LoginState extends State<Login> {
+  TextEditingController emailField = TextEditingController();
+  TextEditingController passField = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey();
+  bool loading = false;
+  void _loginUser() async {
+    if (formKey.currentState!.validate()) {
+      setState(() {
+        loading = true;
+      });
+      ApiResponse response = await login(emailField.text, passField.text);
+      if (response.error != null) {
+        setState(() {
+          loading = false;
+        });
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("${response.error}")));
+      } else {
+        setState(() {
+          loading = false;
+        });
+        _saveAndRedirectToHome(response.data as User);
+      }
+    }
+  }
+
+  void _saveAndRedirectToHome(User user) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString('token', user.token ?? '');
+    sharedPreferences.setInt('user_id', user.id ?? 0);
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Home()), (route) => false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text(
+            "Login",
+          ),
+        ),
+        body: Form(
+            key: formKey,
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
+              children: [
+                TextFormField(
+                  decoration: InpuDeco("Email"),
+                  controller: emailField,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Email Field is Required";
+                    } else if (value.length < 8) {
+                      return "You must enter at least 8 chars";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                TextFormField(
+                  decoration: InpuDeco("Password"),
+                  controller: passField,
+                  obscureText: true,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Email Field is Required";
+                    } else if (value.length < 8) {
+                      return "You must enter at least 8 chars";
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(
+                  height: 30,
+                ),
+                loading
+                    ? const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.red,
+                        ),
+                      )
+                    : MaterialButton(
+                        onPressed: () {
+                          _loginUser();
+                        },
+                        color: Colors.red,
+                        textColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        child: const Text(
+                          "Login",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                const SizedBox(
+                  height: 20,
+                ),
+                orNot("Don't have an account", "Register", () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (context) => Register()),
+                      (route) => false);
+                })
+              ],
+            )));
+  }
+}

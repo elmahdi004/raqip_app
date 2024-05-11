@@ -5,15 +5,19 @@ class NavigationItem extends StatelessWidget {
   final String label;
   final IconData? icon;
   final bool isActive;
-  const NavigationItem(
-      {super.key,
-      required this.label,
-      required this.icon,
-      required this.isActive});
+  final void Function()? action;
+  const NavigationItem({
+    super.key,
+    required this.label,
+    required this.icon,
+    required this.isActive,
+    required this.action,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onTap: action,
       child: Container(
         margin: const EdgeInsets.only(left: 5, right: 5),
         width: isActive ? 90 : 50,
