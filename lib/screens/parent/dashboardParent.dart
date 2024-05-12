@@ -1,14 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/screens/components/NavigationItem.dart';
 import 'package:raqip_app/screens/parent/children.dart';
-import 'package:raqip_app/screens/parent/profile.dart';
+import 'package:raqip_app/state.dart';
 
 class DashboardParent extends StatefulWidget {
-  const DashboardParent({super.key});
-
+  const DashboardParent({super.key, required this.child});
+  final dynamic child;
   @override
   State<DashboardParent> createState() => _DashboardParentState();
 }
@@ -38,7 +36,9 @@ class _DashboardParentState extends State<DashboardParent> {
                   isActive: false,
                   action: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Children()));
+                        builder: (context) => Children(
+                              child: widget.child,
+                            )));
                   },
                 ),
                 NavigationItem(
@@ -51,10 +51,7 @@ class _DashboardParentState extends State<DashboardParent> {
                   label: "Profile",
                   icon: Icons.verified_user,
                   isActive: false,
-                  action: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const Profile()));
-                  },
+                  action: () {},
                 ),
               ],
             ),
@@ -83,9 +80,9 @@ class _DashboardParentState extends State<DashboardParent> {
               const SizedBox(
                 height: 40,
               ),
-              const Text(
-                "Hi, El mahdi",
-                style: TextStyle(
+              Text(
+                "Hi, ${authParent?.name ?? ""}",
+                style: const TextStyle(
                     color: Colors.white,
                     fontSize: 30,
                     fontWeight: FontWeight.bold),
@@ -228,7 +225,7 @@ class _DashboardParentState extends State<DashboardParent> {
                           const SizedBox(
                             height: 10,
                           ),
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 "temps restant",

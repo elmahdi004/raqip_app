@@ -4,8 +4,8 @@ import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/models/api_response.dart';
 import 'package:raqip_app/models/assiatant.dart';
 import 'package:raqip_app/models/parent.dart';
-import 'package:raqip_app/screens/assistant/dashboard_assistant.dart';
-import 'package:raqip_app/screens/parent/dashboardParent.dart';
+import 'package:raqip_app/screens/assistant/routes.dart';
+import 'package:raqip_app/screens/parent/children.dart';
 import 'package:raqip_app/services/auth_services.dart';
 import 'package:raqip_app/state.dart';
 
@@ -30,19 +30,21 @@ class _LoginFormState extends State<LoginForm> {
       loading = false;
     });
     if (response.error == null) {
-      Map<String, dynamic> data = response.data as Map<String, dynamic>;
+      Map<dynamic, dynamic> data = response.data as Map<dynamic, dynamic>;
       if (data['assistant'] != null) {
-        authAssistant = Assistant.fromJson(data['assistant']);
-
+        authAssistant = Assistant.fromJson(data['assistant'][0]);
         // ignore: use_build_context_synchronously
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const DashboardAssistant()),
+            MaterialPageRoute(
+                builder: (context) => const Routes(
+                      route: null,
+                    )),
             (route) => false);
       } else if (data['parent'] != null) {
         authParent = Parent.fromJson(data['parent']);
 // ignore: use_build_context_synchronously
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const DashboardParent()),
+            MaterialPageRoute(builder: (context) => const Children(child: null,)),
             (route) => false);
       }
     } else {}

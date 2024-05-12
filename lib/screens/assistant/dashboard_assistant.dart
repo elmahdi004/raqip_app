@@ -1,12 +1,19 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/screens/assistant/assistant_profile.dart';
+import 'package:raqip_app/screens/assistant/bus_children.dart';
+import 'package:raqip_app/screens/assistant/incident.dart';
+import 'package:raqip_app/screens/assistant/map.dart';
+import 'package:raqip_app/screens/assistant/routes.dart';
 import 'package:raqip_app/screens/components/NavigationItem.dart';
+import 'package:raqip_app/screens/notification.dart';
 import 'package:raqip_app/state.dart';
 
 class DashboardAssistant extends StatefulWidget {
-  const DashboardAssistant({super.key});
-
+  const DashboardAssistant({super.key, required this.route});
+  final dynamic route;
   @override
   State<DashboardAssistant> createState() => _DashboardAssistanrState();
 }
@@ -16,11 +23,42 @@ class _DashboardAssistanrState extends State<DashboardAssistant> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: Container(
+            width: 45,
+            height: 45,
+            margin: const EdgeInsets.all(5),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => AssistantProfile(
+                          route: widget.route,
+                        )));
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(45),
+                child: Image.asset(
+                  "assets/images/assistant.png",
+                  fit: BoxFit.cover,
+                ),
+              ),
+            )),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const NotificationPage()));
+              },
+              icon: const Icon(
+                Icons.notifications_outlined,
+                size: 40,
+                color: Colors.white,
+              ))
+        ],
         iconTheme: IconThemeData(color: mainColor),
-        title: const Text(
-          "Profile",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-        ),
+        // title: const Text(
+        //   "Profile",
+        //   style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        // ),
         centerTitle: true,
         backgroundColor: secondColor,
       ),
@@ -38,8 +76,11 @@ class _DashboardAssistanrState extends State<DashboardAssistant> {
                 icon: Icons.home,
                 isActive: true,
                 action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DashboardAssistant()));
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              DashboardAssistant(route: widget.route)),
+                      (route) => false);
                 },
               ),
               NavigationItem(
@@ -47,23 +88,38 @@ class _DashboardAssistanrState extends State<DashboardAssistant> {
                 icon: Icons.search,
                 isActive: false,
                 action: () {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (context) => const Children()));
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => Routes(
+                                route: widget.route,
+                              )),
+                      (route) => false);
                 },
               ),
               NavigationItem(
                 label: "Contact",
                 icon: Icons.comment,
                 isActive: false,
-                action: () {},
+                action: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => Incident(
+                                route: widget.route,
+                              )),
+                      (route) => false);
+                },
               ),
               NavigationItem(
-                label: "Profile",
-                icon: Icons.verified_user,
+                label: "Children",
+                icon: Icons.supervised_user_circle_outlined,
                 isActive: false,
                 action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AssistantProfile()));
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => BusChildren(
+                                route: widget.route,
+                              )),
+                      (route) => false);
                 },
               ),
             ],
@@ -159,6 +215,12 @@ class _DashboardAssistanrState extends State<DashboardAssistant> {
                 ),
                 Expanded(
                     child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => AssistantMap(
+                              route: widget.route,
+                            )));
+                  },
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),

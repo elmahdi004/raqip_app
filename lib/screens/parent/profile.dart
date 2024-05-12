@@ -1,17 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/models/api_response.dart';
-import 'package:raqip_app/screens/components/NavigationItem.dart';
 import 'package:raqip_app/screens/login.dart';
-import 'package:raqip_app/screens/parent/children.dart';
-import 'package:raqip_app/screens/parent/dashboardParent.dart';
+
 import 'package:raqip_app/screens/parent/updateProfile.dart';
 import 'package:raqip_app/services/auth_services.dart';
 import 'package:raqip_app/state.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
-
   @override
   State<Profile> createState() => _ProfileState();
 }
@@ -39,52 +36,7 @@ class _ProfileState extends State<Profile> {
         centerTitle: true,
         backgroundColor: secondColor,
       ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: 70,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(24))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              NavigationItem(
-                label: "Home",
-                icon: Icons.home,
-                isActive: false,
-                action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DashboardParent()));
-                },
-              ),
-              NavigationItem(
-                label: "Search",
-                icon: Icons.search,
-                isActive: false,
-                action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const Children()));
-                },
-              ),
-              NavigationItem(
-                label: "Contact",
-                icon: Icons.comment,
-                isActive: false,
-                action: () {},
-              ),
-              NavigationItem(
-                label: "Profile",
-                icon: Icons.verified_user,
-                isActive: true,
-                action: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Profile()));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
+      
       body: Container(
         color: secondColor,
         height: MediaQuery.of(context).size.height,
@@ -126,7 +78,7 @@ class _ProfileState extends State<Profile> {
             GestureDetector(
               onTap: () {
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => const UpdateProfile()));
+                    builder: (context) =>  UpdateProfile()));
               },
               child: Container(
                 padding:

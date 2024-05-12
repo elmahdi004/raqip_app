@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/models/api_response.dart';
-import 'package:raqip_app/screens/assistant/dashboard_assistant.dart';
-import 'package:raqip_app/screens/components/NavigationItem.dart';
 import 'package:raqip_app/screens/login.dart';
 import 'package:raqip_app/screens/parent/updateProfile.dart';
 import 'package:raqip_app/services/auth_services.dart';
 import 'package:raqip_app/state.dart';
 
 class AssistantProfile extends StatefulWidget {
-  const AssistantProfile({super.key});
-
+  const AssistantProfile({super.key, required this.route});
+  final dynamic route;
   @override
   State<AssistantProfile> createState() => _AssistantProfileState();
 }
@@ -38,52 +36,6 @@ class _AssistantProfileState extends State<AssistantProfile> {
         ),
         centerTitle: true,
         backgroundColor: secondColor,
-      ),
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: 70,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(24))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              NavigationItem(
-                label: "Home",
-                icon: Icons.home,
-                isActive: false,
-                action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const DashboardAssistant()));
-                },
-              ),
-              NavigationItem(
-                label: "Search",
-                icon: Icons.search,
-                isActive: false,
-                action: () {
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (context) => const Children()));
-                },
-              ),
-              NavigationItem(
-                label: "Contact",
-                icon: Icons.comment,
-                isActive: false,
-                action: () {},
-              ),
-              NavigationItem(
-                label: "Profile",
-                icon: Icons.verified_user,
-                isActive: true,
-                action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const AssistantProfile()));
-                },
-              ),
-            ],
-          ),
-        ),
       ),
       body: Container(
         color: secondColor,

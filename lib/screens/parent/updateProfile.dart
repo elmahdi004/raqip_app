@@ -6,7 +6,6 @@ import 'package:raqip_app/screens/parent/profile.dart';
 
 class UpdateProfile extends StatefulWidget {
   const UpdateProfile({super.key});
-
   @override
   State<UpdateProfile> createState() => _UpdateProfileState();
 }
@@ -46,7 +45,7 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 isActive: false,
                 action: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const Children()),
+                      MaterialPageRoute(builder: (context) =>  const Children(child: null,)),
                       (route) => false);
                 },
               ),
@@ -61,8 +60,10 @@ class _UpdateProfileState extends State<UpdateProfile> {
                 icon: Icons.verified_user,
                 isActive: true,
                 action: () {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => const Profile()));
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Profile(
+                            
+                          )));
                 },
               ),
             ],
