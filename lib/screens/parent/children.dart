@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/models/api_response.dart';
-import 'package:raqip_app/screens/parent/dashboardParent.dart';
-
+import 'package:raqip_app/screens/parent/child_position.dart';
 import 'package:raqip_app/services/parent_services.dart';
 
 class Children extends StatefulWidget {
@@ -105,11 +104,8 @@ class _ChildrenState extends State<Children> {
                       children.length,
                       (index) => GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      DashboardParent(child: children[index])),
-                              (route) => false);
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ChildPosition()));
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),

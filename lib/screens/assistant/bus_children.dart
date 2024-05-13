@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:raqip_app/constant.dart';
+import 'package:raqip_app/models/api_response.dart';
 import 'package:raqip_app/screens/assistant/dashboard_assistant.dart';
 import 'package:raqip_app/screens/assistant/incident.dart';
 import 'package:raqip_app/screens/assistant/routes.dart';
 import 'package:raqip_app/screens/components/NavigationItem.dart';
+import 'package:raqip_app/services/assistant_services.dart';
 
 class BusChildren extends StatefulWidget {
   const BusChildren({super.key, required this.route});
@@ -14,6 +16,27 @@ class BusChildren extends StatefulWidget {
 }
 
 class _BusChildrenState extends State<BusChildren> {
+  List<dynamic> children = [];
+  bool loading = false;
+  @override
+  void initState() {
+    getRouteChildrenHandle(widget.route["id"]);
+    super.initState();
+  }
+
+  getRouteChildrenHandle(int id) async {
+    setState(() {
+      loading = true;
+    });
+    ApiResponse response = await getRouteChildren(id);
+    if (response.error == null && response.data != []) {
+      children = response.data as List<dynamic>;
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -95,72 +118,78 @@ class _BusChildrenState extends State<BusChildren> {
             padding: const EdgeInsets.all(10),
             color: secondColor,
             width: MediaQuery.of(context).size.width,
-            constraints:
-                BoxConstraints(minHeight: MediaQuery.of(context).size.height),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 40,
-                ),
-                ...List.generate(
-                  10,
-                  (index) => Container(
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(15)),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(60),
-                            child: Image.asset(
-                              "assets/images/child-2.png",
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        Container(
-                          child: const Column(
+            constraints: BoxConstraints(
+                minHeight: MediaQuery.of(context).size.height - 90),
+            child: loading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: mainColor,
+                    ),
+                  )
+                : Column(
+                    children: [
+                      const SizedBox(
+                        height: 40,
+                      ),
+                      ...List.generate(
+                        children.length,
+                        (index) => Container(
+                          margin: const EdgeInsets.symmetric(vertical: 10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Elmahdi bellaziz",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.black),
+                              SizedBox(
+                                width: 60,
+                                height: 60,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(60),
+                                  child: Image.asset(
+                                    "assets/images/child-2.png",
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
                               ),
-                              Text(
-                                "av 4,chabaa",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF8D8989)),
+                              const SizedBox(
+                                width: 30,
                               ),
-                              Text(
-                                "4eme annee primaire",
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFF8D8989)),
+                              Container(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      children[index]["username"],
+                                      style: const TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.black),
+                                    ),
+                                    Text(
+                                      "${children[index]["age"]} ans",
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF8D8989)),
+                                    ),
+                                    Text(
+                                      children[index]["nivScolaire"],
+                                      style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF8D8989)),
+                                    )
+                                  ],
+                                ),
                               )
                             ],
                           ),
-                        )
-                      ],
-                    ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
-            ),
           ),
         ));
   }
