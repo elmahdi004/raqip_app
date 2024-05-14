@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:raqip_app/constant.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:raqip_app/services/assistant_services.dart';
 
 class AssistantMap extends StatefulWidget {
   const AssistantMap({super.key, required this.route});
@@ -17,18 +20,88 @@ class AssistantMap extends StatefulWidget {
 class _MapState extends State<AssistantMap> {
   LatLng startPoint = const LatLng(32.307529, -9.216125);
   LatLng endPoint = const LatLng(32.307529, -9.316125);
+  LatLng center = const LatLng(0, 0);
   List<LatLng> routePoints = [];
   bool loading = false;
-  bool suivi = true;
+  bool suivi = false;
+
+  Timer? _timer;
+
+  void _startLocationUpdates() {
+    _timer = Timer.periodic(const Duration(seconds: 10), (Timer timer) {
+      _determinePosition().then((LatLng currentPosition) {
+        print(" I am Work Now");
+        updateVehicleLocation(currentPosition);
+        setState(() {
+          center = currentPosition;
+        });
+      }).catchError((error) {
+        print('Error getting current position: $error');
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  Future<LatLng> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    Position position = await Geolocator.getCurrentPosition();
+    return center = LatLng(position.latitude, position.longitude);
+  }
+
   @override
   void initState() {
+    super.initState();
     setState(() {
       loading = true;
     });
-    fetchRoute();
-    super.initState();
-    setState(() {
-      loading = false;
+
+    _determinePosition().then((LatLng currentPosition) {
+      setState(() {
+        fetchRoute();
+        loading = false;
+      });
+    }).catchError((error) {
+      print('Error getting current position: $error');
+      setState(() {
+        loading = false;
+      });
     });
   }
 
@@ -71,8 +144,7 @@ class _MapState extends State<AssistantMap> {
               children: [
                 FlutterMap(
                   options: MapOptions(
-                    initialCenter: LatLng(widget.route['start_point_lat'],
-                        widget.route['start_point_lng']),
+                    initialCenter: center,
                     initialZoom: 17,
                   ),
                   children: [
@@ -105,10 +177,7 @@ class _MapState extends State<AssistantMap> {
                       Marker(
                         width: 80.0,
                         height: 80.0,
-                        point: LatLng(
-                            widget.route['end_point_lat'],
-                            widget.route[
-                                'end_point_lng']), // Specify the LatLng for the marker position
+                        point: center,
                         child: const Icon(
                           Icons.location_pin,
                           color: Colors.red, // Marker color
@@ -161,7 +230,15 @@ class _MapState extends State<AssistantMap> {
                                             color: mainColor,
                                           ),
                                           child: MaterialButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              setState(() {
+                                                suivi = false;
+                                                createOrUpdateVol(
+                                                    widget.route["id"]);
+
+                                                _timer?.cancel();
+                                              });
+                                            },
                                             child: const Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -185,7 +262,15 @@ class _MapState extends State<AssistantMap> {
                                             color: mainColor,
                                           ),
                                           child: MaterialButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              setState(() {
+                                                suivi = true;
+                                                createOrUpdateVol(
+                                                    widget.route["id"]);
+
+                                                _startLocationUpdates();
+                                              });
+                                            },
                                             child: const Row(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.spaceAround,

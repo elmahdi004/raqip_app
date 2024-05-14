@@ -6,8 +6,8 @@ import 'package:latlong2/latlong.dart';
 import 'package:raqip_app/constant.dart';
 
 class ChildPosition extends StatefulWidget {
-  const ChildPosition({super.key});
-
+  const ChildPosition({super.key,required this.child});
+  final dynamic child;
   @override
   State<ChildPosition> createState() => _ChildPositionState();
 }

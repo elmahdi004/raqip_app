@@ -61,14 +61,15 @@ class _LoginState extends State<Login> {
                 children: [
                   const Spacer(),
                   Container(
-                    height: 90,
-                    width: 350,
-                    decoration:
-                        BoxDecoration(borderRadius: BorderRadius.circular(400)),
+                    height: 70,
+                    width: 320,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      color: secondColor,
+                    ),
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 20),
                     child: MaterialButton(
-                      color: secondColor,
                       textColor: Colors.white,
                       child: const Text(
                         "se connecter",

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/models/api_response.dart';
-import 'package:raqip_app/screens/parent/child_position.dart';
+import 'package:raqip_app/screens/components/NavigationItem.dart';
+import 'package:raqip_app/screens/parent/dashboardParent.dart';
 import 'package:raqip_app/services/parent_services.dart';
 
 class Children extends StatefulWidget {
@@ -36,6 +37,53 @@ class _ChildrenState extends State<Children> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: SafeArea(
+        child: Container(
+          height: 70,
+          decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(Radius.circular(24))),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              NavigationItem(
+                label: "Home",
+                icon: Icons.home,
+                isActive: false,
+                action: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => DashboardParent(
+                            child: widget.child,
+                          )));
+                },
+              ),
+              NavigationItem(
+                label: "Search",
+                icon: Icons.search,
+                isActive: true,
+                action: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => Children(
+                            child: widget.child,
+                          )));
+                },
+              ),
+              NavigationItem(
+                label: "Contact",
+                icon: Icons.comment,
+                isActive: false,
+                action: () {},
+              ),
+              NavigationItem(
+                label: "Profile",
+                icon: Icons.verified_user,
+                isActive: false,
+                action: () {},
+              ),
+            ],
+          ),
+        ),
+      ),
       appBar: AppBar(
         actions: [
           IconButton(
@@ -51,7 +99,7 @@ class _ChildrenState extends State<Children> {
       body: SingleChildScrollView(
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height - 90,
           padding: const EdgeInsets.all(20),
           color: secondColor,
           child: loading
@@ -105,7 +153,8 @@ class _ChildrenState extends State<Children> {
                       (index) => GestureDetector(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ChildPosition()));
+                              builder: (context) =>
+                                  DashboardParent(child: children[index])));
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),

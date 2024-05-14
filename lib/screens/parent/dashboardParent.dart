@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/screens/components/NavigationItem.dart';
+import 'package:raqip_app/screens/notification.dart';
+import 'package:raqip_app/screens/parent/child_position.dart';
 import 'package:raqip_app/screens/parent/children.dart';
+import 'package:raqip_app/screens/parent/profile.dart';
 import 'package:raqip_app/state.dart';
 
 class DashboardParent extends StatefulWidget {
@@ -45,7 +48,11 @@ class _DashboardParentState extends State<DashboardParent> {
                   label: "Contact",
                   icon: Icons.comment,
                   isActive: false,
-                  action: () {},
+                  action: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) =>
+                            ChildPosition(child: widget.child)));
+                  },
                 ),
                 NavigationItem(
                   label: "Profile",
@@ -58,10 +65,30 @@ class _DashboardParentState extends State<DashboardParent> {
           ),
         ),
         appBar: AppBar(
+          leading: Container(
+              width: 45,
+              height: 45,
+              margin: const EdgeInsets.all(5),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => const Profile()));
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(45),
+                  child: Image.asset(
+                    "assets/images/profile.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              )),
           backgroundColor: secondColor,
           actions: [
             IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const NotificationPage()));
+                },
                 icon: const Icon(
                   Icons.notifications_outlined,
                   size: 40,
