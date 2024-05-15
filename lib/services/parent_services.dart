@@ -23,3 +23,67 @@ Future<ApiResponse> getChildren() async {
   }
   return apiResponse;
 }
+
+Future<ApiResponse> getMyChildStatus(int child_id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.get(
+      Uri.parse('$api/parent/$child_id/child/last-vol/child-status'),
+      headers: {'Accept': 'application/json'},
+    );
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 404:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> getMyChildLocation(int child_id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.get(
+      Uri.parse('$api/child/$child_id/get-my-child-location'),
+      headers: {'Accept': 'application/json'},
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 404:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> getMyNotifications() async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.get(
+      Uri.parse('$api/parent/${authParent?.id}/get-my-notifications'),
+      headers: {'Accept': 'application/json'},
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        print('--------------------- ${apiResponse.data}');
+        break;
+      case 404:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    print('----------------- $e');
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}

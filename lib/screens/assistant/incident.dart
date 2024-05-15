@@ -3,6 +3,7 @@ import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/screens/assistant/bus_children.dart';
 import 'package:raqip_app/screens/assistant/custom_incident.dart';
 import 'package:raqip_app/screens/assistant/dashboard_assistant.dart';
+import 'package:raqip_app/screens/assistant/incident_with_type.dart';
 import 'package:raqip_app/screens/assistant/routes.dart';
 import 'package:raqip_app/screens/components/NavigationItem.dart';
 
@@ -44,7 +45,10 @@ class _IncidentState extends State<Incident> {
                 isActive: false,
                 action: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) =>  Routes(route: widget.route,)),
+                      MaterialPageRoute(
+                          builder: (context) => Routes(
+                                route: widget.route,
+                              )),
                       (route) => false);
                 },
               ),
@@ -129,6 +133,11 @@ class _IncidentState extends State<Incident> {
                     child: Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IncidentWithType(
+                                route: widget.route, type: "Trafic")));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
@@ -159,6 +168,11 @@ class _IncidentState extends State<Incident> {
                     child: Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IncidentWithType(
+                                route: widget.route, type: "Police")));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
@@ -189,6 +203,11 @@ class _IncidentState extends State<Incident> {
                     child: Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IncidentWithType(
+                                route: widget.route, type: "Accident")));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
@@ -223,6 +242,11 @@ class _IncidentState extends State<Incident> {
                     child: Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IncidentWithType(
+                                route: widget.route, type: "Querelle")));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
@@ -253,6 +277,11 @@ class _IncidentState extends State<Incident> {
                     child: Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IncidentWithType(
+                                route: widget.route, type: "Roue")));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
@@ -283,6 +312,11 @@ class _IncidentState extends State<Incident> {
                     child: Column(
                   children: [
                     GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => IncidentWithType(
+                                route: widget.route, type: "Pluie")));
+                      },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         width: double.infinity,
@@ -325,7 +359,9 @@ class _IncidentState extends State<Incident> {
                     GestureDetector(
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const CustomIncident()));
+                            builder: (context) => CustomIncident(
+                                  route: widget.route,
+                                )));
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),

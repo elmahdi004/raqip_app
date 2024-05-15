@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:intl/intl.dart';
 import 'package:raqip_app/constant.dart';
+import 'package:raqip_app/models/api_response.dart';
+import 'package:raqip_app/services/parent_services.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
@@ -12,6 +15,40 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationState extends State<NotificationPage> {
   bool empty = false;
+  bool loading = false;
+  List<dynamic> notifications = [];
+  getMyNotificationsHandle() async {
+    setState(() {
+      loading = true;
+    });
+    ApiResponse response = await getMyNotifications();
+    if (response.error == null) {
+      notifications = response.data as List<dynamic>;
+      if (notifications.isEmpty) {
+        setState(() {
+          empty = true;
+        });
+      }
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
+  String changeTimestampFormat(dynamic time) {
+    final DateFormat formatter = DateFormat('HH:mm, dd MMM');
+
+    DateTime? startDateParsed = time != null ? DateTime.parse(time) : null;
+
+    return startDateParsed != null ? formatter.format(startDateParsed) : "";
+  }
+
+  @override
+  void initState() {
+    getMyNotificationsHandle();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,83 +110,108 @@ class _NotificationState extends State<NotificationPage> {
                         minHeight: MediaQuery.of(context).size.height - 80),
                     // height: MediaQuery.of(context).size.height - 80,
                     color: secondColor,
-                    child: Column(
-                      children: [
-                        ...List.generate(
-                            7,
-                            (index) => Container(
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        width: double.infinity,
-                                        decoration: BoxDecoration(
-                                            color: const Color(0xFF1F1F1F),
-                                            borderRadius:
-                                                BorderRadius.circular(15)),
-                                        child: Row(
+                    child: loading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: mainColor,
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              ...List.generate(
+                                  notifications.length,
+                                  (index) => Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        child: Column(
                                           children: [
-                                            SizedBox(
-                                              width: 50,
-                                              height: 50,
-                                              child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50),
-                                                child: Image.asset(
-                                                  "assets/images/assistant.png",
-                                                  fit: BoxFit.cover,
-                                                ),
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              width: 30,
-                                            ),
-                                            const SizedBox(
-                                              width: 250,
-                                              child: Column(
+                                            Container(
+                                              padding: const EdgeInsets.all(10),
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  color:
+                                                      const Color(0xFF1F1F1F),
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          15)),
+                                              child: Row(
                                                 children: [
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        "we have a problem",
-                                                        style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 17),
+                                                  SizedBox(
+                                                    width: 50,
+                                                    height: 50,
+                                                    child: ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50),
+                                                      child: Image.asset(
+                                                        "assets/images/assistant.png",
+                                                        fit: BoxFit.cover,
                                                       ),
-                                                      Text(
-                                                        "Dec 16,2023",
-                                                        style: TextStyle(
-                                                            color: Color(
-                                                                0xFF8D8989)),
-                                                      ),
-                                                    ],
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 15,
                                                   ),
                                                   SizedBox(
-                                                    height: 10,
-                                                  ),
-                                                  Text(
-                                                    "simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's",
-                                                    style: TextStyle(
-                                                        color: Colors.white),
+                                                    width: 250,
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Text(
+                                                              notifications[
+                                                                          index]
+                                                                      ["data"]
+                                                                  ["message"],
+                                                              style: const TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16),
+                                                            ),
+                                                            Text(
+                                                              changeTimestampFormat(
+                                                                  notifications[
+                                                                          index]
+                                                                      [
+                                                                      "created_at"]),
+                                                              style: const TextStyle(
+                                                                  fontSize: 11,
+                                                                  color: Color(
+                                                                      0xFF8D8989)),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 10,
+                                                        ),
+                                                        Text(
+                                                          notifications[index]
+                                                              ["data"]["body"],
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 14,
+                                                                  color: Colors
+                                                                      .white),
+                                                        )
+                                                      ],
+                                                    ),
                                                   )
                                                 ],
                                               ),
                                             )
                                           ],
                                         ),
-                                      )
-                                    ],
-                                  ),
-                                ))
-                      ],
-                    ))));
+                                      ))
+                            ],
+                          ))));
   }
 }

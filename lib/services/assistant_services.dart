@@ -91,3 +91,34 @@ Future<ApiResponse> createOrUpdateVol(int routeId) async {
   }
   return apiResponse;
 }
+
+Future<ApiResponse> createIncident(
+    int routeId, String type, String description) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.post(
+      Uri.parse(
+          '$api/assistant/${authAssistant?.id}/route/$routeId/create-incident'),
+      body: {
+        "type": type,
+        "description": description,
+        "assistant_id": authAssistant?.id.toString(),
+        "route_id": routeId.toString()
+      },
+      headers: {'Accept': 'application/json'},
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        print("wa aloooooooooooooooooooooha");
+
+        break;
+      case 404:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    print("wa errrrrrrrrrrrrrror  : $e");
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}

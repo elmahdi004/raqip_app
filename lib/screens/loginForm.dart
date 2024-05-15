@@ -44,7 +44,10 @@ class _LoginFormState extends State<LoginForm> {
         authParent = Parent.fromJson(data['parent']);
 // ignore: use_build_context_synchronously
         Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => const Children(child: null,)),
+            MaterialPageRoute(
+                builder: (context) => const Children(
+                      child: null,
+                    )),
             (route) => false);
       }
     } else {}

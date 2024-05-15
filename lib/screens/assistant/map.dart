@@ -164,19 +164,6 @@ class _MapState extends State<AssistantMap> {
                       Marker(
                         width: 80.0,
                         height: 80.0,
-                        point: LatLng(
-                            widget.route['start_point_lat'],
-                            widget.route[
-                                'start_point_lng']), // Specify the LatLng for the marker position
-                        child: const Icon(
-                          Icons.location_pin,
-                          color: Colors.red, // Marker color
-                          size: 40.0,
-                        ),
-                      ),
-                      Marker(
-                        width: 80.0,
-                        height: 80.0,
                         point: center,
                         child: const Icon(
                           Icons.location_pin,
