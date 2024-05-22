@@ -122,3 +122,23 @@ Future<ApiResponse> createIncident(
   }
   return apiResponse;
 }
+
+Future<ApiResponse> getLastSuivi(int route_id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.get(
+      Uri.parse('$api/route/$route_id/last-vol/status'),
+      headers: {'Accept': 'application/json'},
+    );
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        break;
+      case 404:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}

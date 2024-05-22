@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raqip_app/constant.dart';
 import 'package:raqip_app/models/api_response.dart';
-import 'package:raqip_app/screens/components/NavigationItem.dart';
 import 'package:raqip_app/screens/parent/dashboardParent.dart';
 import 'package:raqip_app/services/parent_services.dart';
 
@@ -34,66 +33,18 @@ class _ChildrenState extends State<Children> {
     });
   }
 
+  String truncateString(String text, int maxLength) {
+    if (text.length <= maxLength) {
+      return text;
+    } else {
+      return text.substring(0, maxLength) + '...';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: SafeArea(
-        child: Container(
-          height: 70,
-          decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(Radius.circular(24))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              NavigationItem(
-                label: "Home",
-                icon: Icons.home,
-                isActive: false,
-                action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => DashboardParent(
-                            child: widget.child,
-                          )));
-                },
-              ),
-              NavigationItem(
-                label: "Search",
-                icon: Icons.search,
-                isActive: true,
-                action: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => Children(
-                            child: widget.child,
-                          )));
-                },
-              ),
-              NavigationItem(
-                label: "Contact",
-                icon: Icons.comment,
-                isActive: false,
-                action: () {},
-              ),
-              NavigationItem(
-                label: "Profile",
-                icon: Icons.verified_user,
-                isActive: false,
-                action: () {},
-              ),
-            ],
-          ),
-        ),
-      ),
       appBar: AppBar(
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_outlined,
-                size: 40,
-                color: Colors.white,
-              ))
-        ],
         backgroundColor: secondColor,
       ),
       body: SingleChildScrollView(
@@ -114,9 +65,9 @@ class _ChildrenState extends State<Children> {
                     Container(
                       margin: const EdgeInsets.only(right: 170),
                       child: const Text(
-                        "Find your Child :",
+                        "trouvez votre enfant :",
                         style:
-                            TextStyle(color: Color(0xFF8D8989), fontSize: 25),
+                            TextStyle(color: Color(0xFF8D8989), fontSize: 18),
                       ),
                     ),
                     Form(
@@ -194,12 +145,18 @@ class _ChildrenState extends State<Children> {
                                       width: 10,
                                     ),
                                     Text(
-                                      children[index]["username"],
-                                      style: const TextStyle(
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 17),
-                                    )
+                                        truncateString(
+                                            children[index]["username"], 10),
+                                        style: children[index]["status"] ==
+                                                "en bus"
+                                            ? const TextStyle(
+                                                color: Colors.green,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 17)
+                                            : const TextStyle(
+                                                color: Colors.red,
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 17))
                                   ],
                                 ),
                               ),
@@ -210,20 +167,32 @@ class _ChildrenState extends State<Children> {
                                     Container(
                                       width: 10,
                                       height: 10,
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.green),
+                                      decoration:
+                                          children[index]["status"] == "en bus"
+                                              ? BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.green)
+                                              : BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  color: Colors.red),
                                     ),
                                     const SizedBox(
                                       width: 10,
                                     ),
-                                    const Text(
-                                      "en bus",
-                                      style: TextStyle(
-                                          color: Colors.green,
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.w600),
+                                    Text(
+                                      children[index]["status"],
+                                      style:
+                                          children[index]["status"] == "en bus"
+                                              ? const TextStyle(
+                                                  color: Colors.green,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600)
+                                              : const TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w600),
                                     ),
                                   ],
                                 ),

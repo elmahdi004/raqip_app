@@ -87,3 +87,27 @@ Future<ApiResponse> getMyNotifications() async {
   }
   return apiResponse;
 }
+
+
+Future<ApiResponse> getMyChildAssistant(child_id) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    final response = await http.get(
+      Uri.parse('$api/child/$child_id/my-child-assistant'),
+      headers: {'Accept': 'application/json'},
+    );
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body);
+        print('--------------------- ${apiResponse.data}');
+        break;
+      case 404:
+        apiResponse.error = somethingWrong;
+    }
+  } catch (e) {
+    print('----------------- $e');
+    apiResponse.error = somethingWrong;
+  }
+  return apiResponse;
+}

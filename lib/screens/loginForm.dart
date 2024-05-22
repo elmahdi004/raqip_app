@@ -75,7 +75,7 @@ class _LoginFormState extends State<LoginForm> {
             Container(
               margin: const EdgeInsets.only(top: 30),
               child: const Text(
-                "Learn about your child",
+                "Suivez vos enfants en toute simplicité",
                 style: TextStyle(
                     color: Color(0xFFFFB202),
                     fontWeight: FontWeight.bold,

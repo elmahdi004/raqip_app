@@ -106,15 +106,6 @@ class _RoutesState extends State<Routes> {
       // ),
       appBar: AppBar(
         iconTheme: IconThemeData(color: mainColor),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.notifications_outlined,
-                size: 40,
-                color: Colors.white,
-              ))
-        ],
         backgroundColor: secondColor,
       ),
       body: SingleChildScrollView(
@@ -139,7 +130,7 @@ class _RoutesState extends State<Routes> {
                     Container(
                       margin: const EdgeInsets.only(right: 170),
                       child: const Text(
-                        "Bus's Routes :",
+                        "Bus Routes :",
                         style:
                             TextStyle(color: Color(0xFF8D8989), fontSize: 25),
                       ),
