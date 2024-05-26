@@ -6,6 +6,6 @@ Color myTextColor = const Color(0xFF8D8989);
 
 const somethingWrong = "Please try again";
 
-const api = "http://192.168.219.232:8000/api";
+const api = "http://192.168.7.232:403/api";
 const mapboxApiKey =
     "pk.eyJ1IjoiMHVkaW5lIiwiYSI6ImNsdmZ1Z3BwNTBiazMybW5weTI0YzBnZHkifQ.zvrWkMtWnChsFIe69mZ2Fg";

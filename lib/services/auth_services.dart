@@ -36,6 +36,7 @@ Future<ApiResponse> logoutAsParent() async {
   }
   return apiResponse;
 }
+
 Future<ApiResponse> logoutAsAssistant() async {
   ApiResponse apiResponse = ApiResponse();
   try {

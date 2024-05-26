@@ -84,7 +84,13 @@ class _DashboardParentState extends State<DashboardParent> {
                   label: "Home",
                   icon: Icons.home,
                   isActive: true,
-                  action: () {},
+                  action: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                DashboardParent(child: widget.child)),
+                        (route) => false);
+                  },
                 ),
                 NavigationItem(
                   label: "Search",
